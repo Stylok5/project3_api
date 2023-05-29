@@ -12,6 +12,27 @@ const getAllUsers = async (req, res, next) => {
   }
 };
 
+const getCurrentUser = async (req, res, next) => {
+  try {
+    // Get the user ID from the request token (assuming you have implemented authentication middleware)
+    const userId = req.currentUser.id;
+
+    // Fetch the user information from the database
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    // Return the user data
+    res.status(200).json({ success: true, data: user });
+  } catch (err) {
+    next(err);
+  }
+};
+
 const register = async (req, res, next) => {
   const newUser = req.body;
   try {
@@ -71,4 +92,5 @@ export default {
   register,
   login,
   getAllUsers,
+  getCurrentUser,
 };
